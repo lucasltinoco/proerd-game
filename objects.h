@@ -15,15 +15,7 @@ struct Character
     float gravity;
     bool isJumping;
     bool isRising;
-};
-
-struct Bullet
-{
-	int ID;
-	int x;
-	int y;
-	bool live;
-	int speed;
+    bool firstSpace;
 };
 
 //Obstacle
@@ -36,5 +28,4 @@ struct Obstacle
 	int speed;
 	int boundx;
 	int boundy;
-	bool big;
 };

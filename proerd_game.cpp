@@ -2,13 +2,13 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <stdio.h>
 #include "objects.h"
 
 //GLOBALS==============================
 const int WIDTH = 800;
 const int HEIGHT = 400;
 const int NUM_COMETS = 10;
-int N_SPACE = 0;
 enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE};
 bool keys[5] = {false, false, false, false, false};
 
@@ -78,14 +78,16 @@ int main(void)
             redraw = true;
             if(keys[SPACE])
             {
-                if(character.isJumping && character.isRising && (character.y < (HEIGHT*3/4)-25) && (character.y > (HEIGHT/2)-25))
+                if(character.isRising && (character.y < (HEIGHT*5/8)-25) && (character.y > (HEIGHT/2)-25) && character.firstSpace)
                 {
                     character.speed = 7;
                     character.isRising = false;
+                    character.firstSpace = false;
                 }
                 else if(!character.isJumping)
                 {
                     character.isJumping = true;
+                    character.firstSpace = true;
                 }
             }
 
@@ -93,10 +95,10 @@ int main(void)
             if(keys[DOWN])
                 if(character.isRising)
                 {
-                    //character.y = (HEIGHT*3/4)-25;
                     character.speed = 0;
-                    //character.isJumping = false;
-                } else {
+                }
+                else
+                {
                     character.speed = -14;
                 }
 
@@ -135,7 +137,6 @@ int main(void)
                 break;
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = true;
-                // FireBullet(bullets, NUM_BULLETS, character);
                 break;
             }
         }
@@ -207,6 +208,7 @@ void InitShip(Character &character)
     character.isJumping = false;
     character.gravity = 0.2;
     character.isRising = false;
+    character.firstSpace = false;
 }
 void DrawShip(Character &character)
 {
@@ -230,6 +232,7 @@ void DrawShip(Character &character)
             character.y = (HEIGHT*3/4)-25;
             character.speed = 7;
             character.isJumping = false;
+            character.firstSpace = false;
         }
     }
     al_draw_filled_rectangle(character.x-25, character.y-25, character.x + 25, character.y + 25, al_map_rgb(0, 255, 0));
@@ -252,15 +255,11 @@ void DrawComet(Obstacle comets[], int size)
     {
         if(comets[i].live)
         {
-            if(comets[i].big)
-            {
-                al_draw_filled_rectangle(comets[i].x-25, comets[i].y-75, comets[i].x + 25, comets[i].y + 25, al_map_rgb(255, 0, 0));
+            if(comets[i].boundy == 50){
+                al_draw_filled_rectangle(comets[i].x - 25, comets[i].y - 50, comets[i].x + 25, comets[i].y + 50, al_map_rgb(255, 0, 0));
+            } else {
+                al_draw_filled_rectangle(comets[i].x - 25, comets[i].y - 25, comets[i].x + 25, comets[i].y + 25, al_map_rgb(255, 0, 0));
             }
-            else
-            {
-                al_draw_filled_rectangle(comets[i].x-25, comets[i].y-25, comets[i].x + 25, comets[i].y + 25, al_map_rgb(255, 0, 0));
-            }
-
         }
     }
 }
@@ -270,14 +269,29 @@ void StartComet(Obstacle comets[], int size)
     {
         if(!comets[i].live)
         {
-            if(rand() % 750 == 0)
+            if(rand() % 750 == 0 && comets[i].x - comets[i].boundx > comets[i-1].x + comets[i-1].boundx)
             {
+                //OBSTÁCULO PEQUENO
                 comets[i].live = true;
                 comets[i].x = WIDTH;
                 comets[i].y = (HEIGHT*3/4)-25;
-                if(rand() % 500 == 0)
-                    comets[i].big = true;
-                break;
+                comets[i].boundy = 25;
+            }
+            else if (rand() % 500 == 0 && comets[i].x - comets[i].boundx > comets[i-1].x + comets[i-1].boundx)
+            {
+                //OBSTÁCULO FLUTUANTE
+                comets[i].live = true;
+                comets[i].x = WIDTH;
+                comets[i].y = (HEIGHT*3/4)-100;
+                comets[i].boundy = 25;
+            }
+            else if (rand() % 250 == 0 && comets[i].x - comets[i].boundx > comets[i-1].x + comets[i-1].boundx)
+            {
+                //OBSTÁCULO GRANDE
+                comets[i].live = true;
+                comets[i].x = WIDTH;
+                comets[i].y = (HEIGHT*3/4)-50;
+                comets[i].boundy = 50;
             }
         }
     }
