@@ -2,7 +2,7 @@
 enum IDS{PLAYER, BULLET, ENEMY};
 
 //Our Player
-struct Character
+struct Player
 {
 	int ID;
 	int x;
@@ -19,7 +19,7 @@ struct Character
 };
 
 //Obstacle
-struct Obstacle
+struct Drug
 {
 	int ID;
 	int x;
