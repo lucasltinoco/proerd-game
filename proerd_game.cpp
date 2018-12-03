@@ -3,24 +3,11 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <stdio.h>
+#include "globals.h"
 #include "objects.h"
-
-//GLOBALS==============================
-const int WIDTH = 800;
-const int HEIGHT = 400;
-const int NUM_COMETS = 10;
-enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE};
-bool keys[5] = {false, false, false, false, false};
-
-//prototypes
-void InitPlayer(Player &player);
-void DrawPlayer(Player &player);
-
-void InitDrug(Drug drugs[], int size);
-void DrawDrug(Drug drugs[], int size);
-void StartDrug(Drug drugs[], int size);
-void UpdateDrug(Drug drugs[], int size);
-void CollideDrug(Drug drugs[], int cSize, Player &player);
+#include "player.h"
+#include "peace.h"
+#include "drugs.h"
 
 int main(void)
 {
@@ -32,7 +19,8 @@ int main(void)
 
     //object variables
     Player player;
-    Drug drugs[NUM_COMETS];
+    Drug drugs[NUM_OBJECTS];
+    Peace peace[NUM_OBJECTS];
 
     //Allegro variables
     ALLEGRO_DISPLAY *display = NULL;
@@ -59,7 +47,9 @@ int main(void)
 
     srand(time(NULL));
     InitPlayer(player);
-    InitDrug(drugs, NUM_COMETS);
+    InitDrug(drugs, NUM_OBJECTS);
+    InitPeace(peace, NUM_OBJECTS);
+
 
     font18 = al_load_font("arial.ttf", 18, 0);
 
@@ -105,9 +95,12 @@ int main(void)
 
             if(!isGameOver)
             {
-                StartDrug(drugs, NUM_COMETS);
-                UpdateDrug(drugs, NUM_COMETS);
-                CollideDrug(drugs, NUM_COMETS, player);
+                StartDrug(drugs, NUM_OBJECTS, peace);
+                StartPeace(peace, NUM_OBJECTS, drugs);
+                UpdateDrug(drugs, NUM_OBJECTS);
+                UpdatePeace(peace, NUM_OBJECTS);
+                CollideDrug(drugs, NUM_OBJECTS, player);
+                CollidePeace(peace, NUM_OBJECTS, player);
 
                 if(player.lives <= 0)
                     isGameOver = false;
@@ -173,9 +166,10 @@ int main(void)
             if(!isGameOver)
             {
                 DrawPlayer(player);
-                DrawDrug(drugs, NUM_COMETS);
+                DrawDrug(drugs, NUM_OBJECTS);
+                DrawPeace(peace, NUM_OBJECTS);
 
-                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", player.lives, player.score);
+                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.lives, player.score);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
             }
             else
@@ -194,159 +188,4 @@ int main(void)
     al_destroy_display(display);						//destroy our display object
 
     return 0;
-}
-
-void InitPlayer(Player &player)
-{
-    player.x = WIDTH/4;
-    player.y = (HEIGHT*3/4)-25;
-    player.ID = PLAYER;
-    player.lives = 3;
-    player.speed = 7;
-    player.boundx = 25;
-    player.boundy = 25;
-    player.score = 0;
-    player.isJumping = false;
-    player.gravity = 0.2;
-    player.isRising = false;
-    player.firstSpace = false;
-}
-void DrawPlayer(Player &player)
-{
-    //LÓGICA DO PULO COM GRAVIDADE
-    if(player.isJumping)
-    {
-        player.y -= player.speed;
-        player.speed -= player.gravity;
-
-        if(player.speed > 0 && (player.y < (HEIGHT*3/4)-25))
-        {
-            player.isRising = true;
-        }
-        else
-        {
-            player.isRising = false;
-        }
-    }
-    if(keys[DOWN] && player.y >= (HEIGHT*3/4)-25)
-    {
-        player.y = (HEIGHT*3/4)-20;
-        player.boundy = 20;
-        al_draw_filled_rectangle(player.x-25, player.y - 20, player.x + 25, player.y + 20, al_map_rgb(0, 255, 0));
-    }
-    else if (player.y >= (HEIGHT*3/4)-25)
-    {
-        player.y = (HEIGHT*3/4)-25;
-        player.boundy = 25;
-        player.speed = 7;
-        player.isJumping = false;
-        player.firstSpace = false;
-        al_draw_filled_rectangle(player.x-25, player.y - 25, player.x + 25, player.y + 25, al_map_rgb(0, 255, 0));
-    }
-    else
-    {
-        player.boundy = 25;
-        al_draw_filled_rectangle(player.x-25, player.y - 25, player.x + 25, player.y + 25, al_map_rgb(0, 255, 0));
-    }
-}
-
-void InitDrug(Drug drugs[], int size)
-{
-    for(int i = 0; i < size; i++)
-    {
-        drugs[i].ID = ENEMY;
-        drugs[i].live = false;
-        drugs[i].speed = 5;
-        drugs[i].boundx = 25;
-        drugs[i].boundy = 25;
-    }
-}
-void DrawDrug(Drug drugs[], int size)
-{
-    for(int i = 0; i < size; i++)
-    {
-        if(drugs[i].live)
-        {
-            if(drugs[i].boundy == 50)
-            {
-                al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
-            }
-            else
-            {
-                al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 25, drugs[i].x + 25, drugs[i].y + 25, al_map_rgb(255, 0, 0));
-            }
-        }
-    }
-}
-void StartDrug(Drug drugs[], int size)
-{
-    for(int i = 0; i < size; i++)
-    {
-        if(!drugs[i].live)
-        {
-            if(rand() % 750 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx)
-            {
-                //OBSTÁCULO PEQUENO
-                drugs[i].live = true;
-                drugs[i].x = WIDTH;
-                drugs[i].y = (HEIGHT*3/4)-25;
-                drugs[i].boundy = 25;
-            }
-            else if (rand() % 500 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx)
-            {
-                //OBSTÁCULO FLUTUANTE
-                drugs[i].live = true;
-                drugs[i].x = WIDTH;
-                drugs[i].y = (HEIGHT*3/4)-100;
-                drugs[i].boundy = 25;
-            }
-            else if (rand() % 250 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx)
-            {
-                //OBSTÁCULO GRANDE
-                drugs[i].live = true;
-                drugs[i].x = WIDTH;
-                drugs[i].y = (HEIGHT*3/4)-50;
-                drugs[i].boundy = 50;
-            }
-            else if (rand() % 125 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx)
-            {
-                //OBSTÁCULO QUE REQUER QUE O JOGADOR ABAIXE
-                drugs[i].live = true;
-                drugs[i].x = WIDTH;
-                drugs[i].y = (HEIGHT*3/4)-95;
-                drugs[i].boundy = 50;
-            }
-        }
-    }
-}
-void UpdateDrug(Drug drugs[], int size)
-{
-    for(int i = 0; i < size; i++)
-    {
-        if(drugs[i].live)
-        {
-            drugs[i].x -= drugs[i].speed;
-        }
-    }
-}
-void CollideDrug(Drug drugs[], int cSize, Player &player)
-{
-    for(int i = 0; i < cSize; i++)
-    {
-        if(drugs[i].live)
-        {
-            if(drugs[i].x - drugs[i].boundx < player.x + player.boundx &&
-                    drugs[i].x + drugs[i].boundx > player.x - player.boundx &&
-                    drugs[i].y - drugs[i].boundy < player.y + player.boundy &&
-                    drugs[i].y + drugs[i].boundy > player.y - player.boundy)
-            {
-                player.lives--;
-                drugs[i].live = false;
-            }
-            else if(drugs[i].x < 0)
-            {
-                drugs[i].live = false;
-            }
-        }
-    }
 }

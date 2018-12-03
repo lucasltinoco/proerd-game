@@ -18,7 +18,7 @@ struct Player
     bool firstSpace;
 };
 
-//Obstacle
+//Drug
 struct Drug
 {
 	int ID;
@@ -29,3 +29,14 @@ struct Drug
 	int boundx;
 	int boundy;
 };
+
+struct Peace {
+	int ID;
+	int x;
+	int y;
+	bool live;
+	int speed;
+    int boundx;
+	int boundy;
+};
+
