@@ -3,11 +3,11 @@ void InitPlayer(Player &player)
     player.x = WIDTH/4;
     player.y = (HEIGHT*3/4)-25;
     player.ID = PLAYER;
-    player.lives = 5;
+    player.drugs = 0;
     player.speed = 7;
     player.boundx = 25;
     player.boundy = 25;
-    player.score = 0;
+    player.peaces = 0;
     player.isJumping = false;
     player.gravity = 0.2;
     player.isRising = false;

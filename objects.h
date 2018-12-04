@@ -7,11 +7,11 @@ struct Player
 	int ID;
 	int x;
 	int y;
-	int lives;
+	int drugs;
 	float speed;
 	int boundx;
 	int boundy;
-	int score;
+	int peaces;
     float gravity;
     bool isJumping;
     bool isRising;

@@ -19,8 +19,8 @@ int main(void)
 
     //object variables
     Player player;
-    Drug drugs[NUM_OBJECTS];
-    Peace peace[NUM_OBJECTS];
+    Drug drugs[DrugFreq];
+    Peace peace[PeaceFreq];
 
     //Allegro variables
     ALLEGRO_DISPLAY *display = NULL;
@@ -47,8 +47,8 @@ int main(void)
 
     srand(time(NULL));
     InitPlayer(player);
-    InitDrug(drugs, NUM_OBJECTS);
-    InitPeace(peace, NUM_OBJECTS);
+    InitDrug(drugs, DrugFreq);
+    InitPeace(peace, PeaceFreq);
 
 
     font18 = al_load_font("arial.ttf", 18, 0);
@@ -95,15 +95,15 @@ int main(void)
 
             if(!isGameOver)
             {
-                StartDrug(drugs, NUM_OBJECTS, peace);
-                StartPeace(peace, NUM_OBJECTS, drugs);
-                UpdateDrug(drugs, NUM_OBJECTS);
-                UpdatePeace(peace, NUM_OBJECTS);
-                CollideDrug(drugs, NUM_OBJECTS, player);
-                CollidePeace(peace, NUM_OBJECTS, player);
+                StartDrug(drugs, DrugFreq, peace);
+                StartPeace(peace, PeaceFreq, drugs);
+                UpdateDrug(drugs, DrugFreq);
+                UpdatePeace(peace, PeaceFreq);
+                CollideDrug(drugs, DrugFreq, player);
+                CollidePeace(peace, PeaceFreq, player);
 
-                if(player.lives <= 0)
-                    isGameOver = false;
+                if(player.drugs > 4)
+                    isGameOver = true;
             }
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -166,15 +166,15 @@ int main(void)
             if(!isGameOver)
             {
                 DrawPlayer(player);
-                DrawDrug(drugs, NUM_OBJECTS);
-                DrawPeace(peace, NUM_OBJECTS);
+                DrawDrug(drugs, DrugFreq);
+                DrawPeace(peace, PeaceFreq);
 
-                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.lives, player.score);
+                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
             }
             else
             {
-                al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", player.score);
+                al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", player.peaces);
             }
 
             al_flip_display();

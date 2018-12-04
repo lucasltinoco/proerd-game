@@ -23,21 +23,27 @@ void StartPeace(Peace peace[], int size, Drug drugs[])
 {
     for(int i = 0; i < size; i++)
     {
-        if(!peace[i].live)
+        if(!peace[i].live && i == size-1)
         {
-            if(rand() % 1250 == 0 && peace[i].x - peace[i].boundx > peace[i-1].x + peace[i-1].boundx)
+            switch (rand() % 3)
             {
-                //OBSTÁCULO PEQUENO
+                case 0: //OBSTÁCULO PEQUENO
                 peace[i].live = true;
                 peace[i].x = WIDTH;
                 peace[i].y = (HEIGHT*3/4)-25;
-            }
-            else if (rand() % 1250 == 0 && peace[i].x - peace[i].boundx > peace[i-1].x + peace[i-1].boundx && peace[i].x - peace[i].boundx> drugs[i-1].x + drugs[i-1].boundx)
-            {
-                //OBSTÁCULO FLUTUANTE
+                break;
+
+                case 1: //OBSTÁCULO FLUTUANTE
                 peace[i].live = true;
                 peace[i].x = WIDTH;
                 peace[i].y = (HEIGHT*3/4)-125;
+                break;
+
+                case 2: //OBSTÁCULO FLUTUANTE MAIS ALTO
+                peace[i].live = true;
+                peace[i].x = WIDTH;
+                peace[i].y = (HEIGHT*3/4)-175;
+                break;
             }
         }
     }
@@ -63,7 +69,7 @@ void CollidePeace(Peace peace[], int cSize, Player &player)
                     peace[i].y - peace[i].boundy < player.y + player.boundy &&
                     peace[i].y + peace[i].boundy > player.y - player.boundy)
             {
-                player.score++;
+                player.peaces++;
                 peace[i].live = false;
             }
             else if(peace[i].x < 0)

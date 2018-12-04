@@ -30,39 +30,37 @@ void StartDrug(Drug drugs[], int size, Peace peace[])
 {
     for(int i = 0; i < size; i++)
     {
-        if(!drugs[i].live)
+        if(!drugs[i].live && i == size-1)
         {
-            if(rand() % 750/2 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx && drugs[i].x - drugs[i].boundx > peace[i-1].x + peace[i-1].boundx)
+            switch (rand() % 4)
             {
-                //OBSTÁCULO PEQUENO
+                case 0: //OBSTÁCULO PEQUENO
                 drugs[i].live = true;
                 drugs[i].x = WIDTH;
                 drugs[i].y = (HEIGHT*3/4)-25;
                 drugs[i].boundy = 25;
-            }
-            else if (rand() % 500/2 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx && drugs[i].x - drugs[i].boundx > peace[i-1].x + peace[i-1].boundx)
-            {
-                //OBSTÁCULO FLUTUANTE
+                break;
+
+                case 1: //OBSTÁCULO FLUTUANTE
                 drugs[i].live = true;
                 drugs[i].x = WIDTH;
                 drugs[i].y = (HEIGHT*3/4)-100;
                 drugs[i].boundy = 25;
-            }
-            else if (rand() % 250/2 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx && drugs[i].x - drugs[i].boundx > peace[i-1].x + peace[i-1].boundx)
-            {
-                //OBSTÁCULO GRANDE
+                break;
+
+                case 2: //OBSTÁCULO GRANDE
                 drugs[i].live = true;
                 drugs[i].x = WIDTH;
                 drugs[i].y = (HEIGHT*3/4)-50;
                 drugs[i].boundy = 50;
-            }
-            else if (rand() % 125/2 == 0 && drugs[i].x - drugs[i].boundx > drugs[i-1].x + drugs[i-1].boundx && drugs[i].x - drugs[i].boundx > peace[i-1].x + peace[i-1].boundx)
-            {
-                //OBSTÁCULO QUE REQUER QUE O JOGADOR ABAIXE
+                break;
+
+                case 3: //OBSTÁCULO QUE REQUER QUE O JOGADOR ABAIXE
                 drugs[i].live = true;
                 drugs[i].x = WIDTH;
                 drugs[i].y = (HEIGHT*3/4)-95;
                 drugs[i].boundy = 50;
+                break;
             }
         }
     }
@@ -88,7 +86,7 @@ void CollideDrug(Drug drugs[], int cSize, Player &player)
                     drugs[i].y - drugs[i].boundy < player.y + player.boundy &&
                     drugs[i].y + drugs[i].boundy > player.y - player.boundy)
             {
-                player.lives--;
+                player.drugs++;
                 drugs[i].live = false;
             }
             else if(drugs[i].x < 0)
