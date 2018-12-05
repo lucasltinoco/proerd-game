@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "objects.h"
 #include "player.h"
-#include "peace.h"
+//#include "peace.h"
 #include "drugs.h"
 
 int main(void)
@@ -47,8 +47,7 @@ int main(void)
 
     srand(time(NULL));
     InitPlayer(player);
-    InitDrug(drugs, DrugFreq);
-    InitPeace(peace, PeaceFreq);
+    InitDrugnPeace(drugs, DrugFreq, peace);
 
 
     font18 = al_load_font("arial.ttf", 18, 0);
@@ -95,15 +94,12 @@ int main(void)
 
             if(!isGameOver)
             {
-                StartDrug(drugs, DrugFreq, peace);
-                StartPeace(peace, PeaceFreq, drugs);
-                UpdateDrug(drugs, DrugFreq);
-                UpdatePeace(peace, PeaceFreq);
-                CollideDrug(drugs, DrugFreq, player);
-                CollidePeace(peace, PeaceFreq, player);
+                StartDrugnPeace(drugs, DrugFreq, peace);
+                UpdateDrugnPeace(drugs, DrugFreq, peace);
+                CollideDrugnPeace(drugs, DrugFreq, player, peace);
 
                 if(player.drugs > 4)
-                    isGameOver = true;
+                    isGameOver = false;
             }
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -166,8 +162,7 @@ int main(void)
             if(!isGameOver)
             {
                 DrawPlayer(player);
-                DrawDrug(drugs, DrugFreq);
-                DrawPeace(peace, PeaceFreq);
+                DrawDrugnPeace(drugs, DrugFreq, peace);
 
                 al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
