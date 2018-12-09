@@ -2,12 +2,12 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_image.h>
 #include <stdio.h>
 #include "globals.h"
 #include "objects.h"
 #include "player.h"
-//#include "peace.h"
-#include "drugs.h"
+#include "drugs&peace.h"
 
 int main(void)
 {
@@ -16,6 +16,9 @@ int main(void)
     bool redraw = true;
     const int FPS = 60;
     bool isGameOver = false;
+    int page = 1;
+    int options = 0;
+    int frameCount1 = 0;
 
     //object variables
     Player player;
@@ -27,6 +30,11 @@ int main(void)
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_TIMER *timer = NULL;
     ALLEGRO_FONT *font18 = NULL;
+    ALLEGRO_FONT *font50 = NULL;
+    ALLEGRO_FONT *font60 = NULL;
+    ALLEGRO_BITMAP *logo_proerd = NULL;
+    ALLEGRO_BITMAP *leao_proerd = NULL;
+    ALLEGRO_BITMAP *fundo_proerd = NULL;
 
     //Initialization Functions
     if(!al_init())										//initialize Allegro
@@ -41,6 +49,7 @@ int main(void)
     al_install_keyboard();
     al_init_font_addon();
     al_init_ttf_addon();
+    al_init_image_addon();
 
     event_queue = al_create_event_queue();
     timer = al_create_timer(1.0 / FPS);
@@ -50,7 +59,9 @@ int main(void)
     InitDrugnPeace(drugs, DrugFreq, peace);
 
 
-    font18 = al_load_font("arial.ttf", 18, 0);
+    font18 = al_load_font("Comic Book.ttf", 18, 0);
+    font50 = al_load_font("Comic Book.ttf", 50, 0);
+    font60 = al_load_font("Comic Book.ttf", 60, 0);
 
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -82,6 +93,7 @@ int main(void)
 
 
             if(keys[DOWN])
+            {
                 if(player.isRising)
                 {
                     player.speed = 0;
@@ -90,14 +102,35 @@ int main(void)
                 {
                     player.speed = -14;
                 }
+                if(page == 1 && options < 2 && frameCount1 % 15 == 0)
+                    options++;
+            }
 
+            if(keys[UP])
+                if(page == 1 && options > 0 && frameCount1 % 15 == 0)
+                    options--;
+
+            if(keys[ENTER])
+                if(page == 1)
+                {
+                    switch(options)
+                    {
+                        case 0:
+                            page = 2;
+                        break;
+
+                        case 1:
+                            page = 3;
+                        break;
+
+                        case 2:
+                            al_destroy_display(display);
+                        break;
+                    }
+                }
 
             if(!isGameOver)
             {
-                StartDrugnPeace(drugs, DrugFreq, peace);
-                UpdateDrugnPeace(drugs, DrugFreq, peace);
-                CollideDrugnPeace(drugs, DrugFreq, player, peace);
-
                 if(player.drugs > 4)
                     isGameOver = false;
             }
@@ -128,6 +161,9 @@ int main(void)
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = true;
                 break;
+            case ALLEGRO_KEY_ENTER:
+                keys[ENTER] = true;
+                break;
             }
         }
         else if(ev.type == ALLEGRO_EVENT_KEY_UP)
@@ -152,13 +188,58 @@ int main(void)
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = false;
                 break;
+            case ALLEGRO_KEY_ENTER:
+                keys[ENTER] = false;
+                break;
             }
         }
-
-        if(redraw && al_is_event_queue_empty(event_queue))
+        if(redraw && al_is_event_queue_empty(event_queue) && page == 1) //MENU
         {
             redraw = false;
+            frameCount1++;
+            if(frameCount1 > 60)
+                frameCount1 = 0;
 
+            fundo_proerd = al_load_bitmap("fundo_proerd.png");
+            leao_proerd = al_load_bitmap("leao_proerd.png");
+            logo_proerd = al_load_bitmap("proerd_logo.png");
+
+            al_draw_bitmap(fundo_proerd, 0, 0, 0);
+            al_draw_bitmap(leao_proerd, WIDTH/4 - 480/2, 300, 0);
+            al_draw_bitmap(logo_proerd, WIDTH/4 - 500/2, HEIGHT/16 - 50, 0);
+
+            switch(options)
+            {
+                case 0:
+                al_draw_text(font60, al_map_rgb(255, 0, 0), 3*WIDTH/4, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Jogar");
+                al_draw_text(font50, al_map_rgb(0, 0, 0), 3*WIDTH/4, 2*HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Créditos");
+                al_draw_text(font50, al_map_rgb(0, 0, 0), 3*WIDTH/4, 3*HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Sair");
+                break;
+
+                case 1:
+                al_draw_text(font50, al_map_rgb(0, 0, 0), 3*WIDTH/4, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Jogar");
+                al_draw_text(font60, al_map_rgb(255, 0, 0), 3*WIDTH/4, 2*HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Créditos");
+                al_draw_text(font50, al_map_rgb(0, 0, 0), 3*WIDTH/4, 3*HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Sair");
+                break;
+
+                case 2:
+                al_draw_text(font50, al_map_rgb(0, 0, 0), 3*WIDTH/4, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Jogar");
+                al_draw_text(font50, al_map_rgb(0, 0, 0), 3*WIDTH/4, 2*HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Créditos");
+                al_draw_text(font60, al_map_rgb(255, 0, 0), 3*WIDTH/4, 3*HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Sair");
+                break;
+            }
+
+            al_flip_display();
+            al_clear_to_color(al_map_rgb(0,0,0));
+        }
+
+
+        if(redraw && al_is_event_queue_empty(event_queue) && page == 2)
+        {
+            redraw = false;
+            StartDrugnPeace(drugs, DrugFreq, peace);
+            UpdateDrugnPeace(drugs, DrugFreq, peace);
+            CollideDrugnPeace(drugs, DrugFreq, player, peace);
             if(!isGameOver)
             {
                 DrawPlayer(player);
@@ -177,9 +258,15 @@ int main(void)
         }
     }
 
+
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
+    al_destroy_bitmap(logo_proerd);
+    al_destroy_bitmap(leao_proerd);
+    al_destroy_bitmap(fundo_proerd);
     al_destroy_font(font18);
+    al_destroy_font(font50);
+    al_destroy_font(font60);
     al_destroy_display(display);						//destroy our display object
 
     return 0;
