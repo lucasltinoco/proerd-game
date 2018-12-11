@@ -18,7 +18,9 @@ int main(void)
     bool isGameOver = false;
     int page = 1;
     int options = 0;
-    int frameCount1 = 0;
+    int frameCount = 0;
+    int secondsCount = 0;
+    int textspeed = 0;
 
     //object variables
     Player player;
@@ -102,12 +104,12 @@ int main(void)
                 {
                     player.speed = -14;
                 }
-                if(page == 1 && options < 2 && frameCount1 % 15 == 0)
+                if(page == 1 && options < 2)
                     options++;
             }
 
             if(keys[UP])
-                if(page == 1 && options > 0 && frameCount1 % 15 == 0)
+                if(page == 1 && options > 0)
                     options--;
 
             if(keys[ENTER])
@@ -196,9 +198,6 @@ int main(void)
         if(redraw && al_is_event_queue_empty(event_queue) && page == 1) //MENU
         {
             redraw = false;
-            frameCount1++;
-            if(frameCount1 > 60)
-                frameCount1 = 0;
 
             fundo_proerd = al_load_bitmap("fundo_proerd.png");
             leao_proerd = al_load_bitmap("leao_proerd.png");
@@ -237,21 +236,43 @@ int main(void)
         if(redraw && al_is_event_queue_empty(event_queue) && page == 2)
         {
             redraw = false;
-            StartDrugnPeace(drugs, DrugFreq, peace);
-            UpdateDrugnPeace(drugs, DrugFreq, peace);
-            CollideDrugnPeace(drugs, DrugFreq, player, peace);
+            if(secondsCount > 20)
+            {
+                StartDrugnPeace(drugs, DrugFreq, peace);
+                UpdateDrugnPeace(drugs, DrugFreq, peace);
+                CollideDrugnPeace(drugs, DrugFreq, player, peace);
+            }
+
             if(!isGameOver)
             {
+                frameCount++;
+                if(frameCount == 60)
+                {
+                    frameCount = 0;
+                    secondsCount++;
+                }
+                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 25, 0, "Tempo decorrido: %is", secondsCount);
+                if(secondsCount < 22)
+                {
+                    textspeed = textspeed + 4;
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed, HEIGHT/4, 0, "O uso de drogas prejudica o seu futuro e o futuro das pessoas ao seu redor");
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed + 1000, HEIGHT/2, 0, "Por isso, fuja das drogas e consuma só o que te faz bem!");
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4, 0, "Opções:");
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 25, 0, "Tecle ESPAÇO para pular");
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 50, 0, "Tecle ESPAÇO 2x para pular mais alto");
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 75, 0, "Tecle SETA PARA BAIXO para descer enquanto no alto");
+                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 100, 0, "Tecle SETA PARA BAIXO para abaixar-se no chão");
+                }
+
                 DrawPlayer(player);
-                DrawDrugnPeace(drugs, DrugFreq, peace);
+                if (secondsCount > 20)
+                    DrawDrugnPeace(drugs, DrugFreq, peace);
 
                 al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
             }
             else
-            {
                 al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", player.peaces);
-            }
 
             al_flip_display();
             al_clear_to_color(al_map_rgb(0,0,0));
