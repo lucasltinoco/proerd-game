@@ -15,7 +15,7 @@ void InitDrugnPeace(Drug drugs[], int size, Peace peace[])
         peace[i].boundy = 25;
     }
 }
-void DrawDrugnPeace(Drug drugs[], int size, Peace peace[])
+void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player)
 {
     for(int i = 0; i < size; i++)
     {
@@ -137,6 +137,8 @@ void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[])
             && peace[i].y + peace[i].boundy > player.y - player.boundy)
             {
                 player.peaces++;
+                if(player.peaces == 2)
+                    drugs[i].speed = drugs[i].speed + 2;
                 peace[i].live = false;
             }
             else if(peace[i].x < 0)

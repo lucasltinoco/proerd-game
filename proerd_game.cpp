@@ -18,9 +18,21 @@ int main(void)
     bool isGameOver = false;
     int page = 1;
     int options = 0;
-    int frameCount = 0;
+    int frameCount1 = 0;
+    int frameCount2 = 0;
     int secondsCount = 0;
     int textspeed = 0;
+    //largura e altura de cada sprite dentro da folha
+    int altura_sprite=140, largura_sprite=108;
+    //quantos sprites tem em cada linha da folha, e a atualmente mostrada
+    int colunas_folha=4, coluna_atual=0;
+        //quantos sprites tem em cada coluna da folha, e a atualmente mostrada
+    int linha_atual=0, linhas_folha=2;
+    //posicoes X e Y da folha de sprites que serao mostradas na tela
+    int regiao_x_folha=0, regiao_y_folha=0;
+    //quantos frames devem se passar para atualizar para o proximo sprite
+    int frames_sprite=6;
+    //posicao X Y da janela em que sera mostrado o sprite
 
     //object variables
     Player player;
@@ -37,6 +49,8 @@ int main(void)
     ALLEGRO_BITMAP *logo_proerd = NULL;
     ALLEGRO_BITMAP *leao_proerd = NULL;
     ALLEGRO_BITMAP *fundo_proerd = NULL;
+    ALLEGRO_BITMAP *folha_sprite = NULL;
+    ALLEGRO_BITMAP *marijuana = NULL;
 
     //Initialization Functions
     if(!al_init())										//initialize Allegro
@@ -64,6 +78,11 @@ int main(void)
     font18 = al_load_font("Comic Book.ttf", 18, 0);
     font50 = al_load_font("Comic Book.ttf", 50, 0);
     font60 = al_load_font("Comic Book.ttf", 60, 0);
+
+    fundo_proerd = al_load_bitmap("fundo_proerd.png");
+    leao_proerd = al_load_bitmap("leao_proerd.png");
+    logo_proerd = al_load_bitmap("proerd_logo.png");
+    folha_sprite = al_load_bitmap("run2.bmp");
 
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -104,13 +123,7 @@ int main(void)
                 {
                     player.speed = -14;
                 }
-                if(page == 1 && options < 2)
-                    options++;
             }
-
-            if(keys[UP])
-                if(page == 1 && options > 0)
-                    options--;
 
             if(keys[ENTER])
                 if(page == 1)
@@ -150,9 +163,13 @@ int main(void)
                 break;
             case ALLEGRO_KEY_UP:
                 keys[UP] = true;
+                if(page == 1 && options > 0)
+                    options--;
                 break;
             case ALLEGRO_KEY_DOWN:
                 keys[DOWN] = true;
+                if(page == 1 && options < 2)
+                    options++;
                 break;
             case ALLEGRO_KEY_LEFT:
                 keys[LEFT] = true;
@@ -199,14 +216,9 @@ int main(void)
         {
             redraw = false;
 
-            fundo_proerd = al_load_bitmap("fundo_proerd.png");
-            leao_proerd = al_load_bitmap("leao_proerd.png");
-            logo_proerd = al_load_bitmap("proerd_logo.png");
-
             al_draw_bitmap(fundo_proerd, 0, 0, 0);
             al_draw_bitmap(leao_proerd, WIDTH/4 - 480/2, 300, 0);
             al_draw_bitmap(logo_proerd, WIDTH/4 - 500/2, HEIGHT/16 - 50, 0);
-
             switch(options)
             {
                 case 0:
@@ -245,10 +257,10 @@ int main(void)
 
             if(!isGameOver)
             {
-                frameCount++;
-                if(frameCount == 60)
+                frameCount1++;
+                if(frameCount1 == 60)
                 {
-                    frameCount = 0;
+                    frameCount1 = 0;
                     secondsCount++;
                 }
                 al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 25, 0, "Tempo decorrido: %is", secondsCount);
@@ -263,10 +275,35 @@ int main(void)
                     al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 75, 0, "Tecle SETA PARA BAIXO para descer enquanto no alto");
                     al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 100, 0, "Tecle SETA PARA BAIXO para abaixar-se no chão");
                 }
-
+                frameCount2++;
+                if (frameCount2 >= frames_sprite)
+                {
+                    //reseta cont_frames
+                    frameCount2=0;
+                    //incrementa a coluna atual, para mostrar o proximo sprite
+                    coluna_atual++;
+                    //se coluna atual passou da ultima coluna
+                    if (coluna_atual >= colunas_folha)
+                    {
+                        //volta pra coluna inicial
+                        coluna_atual=0;
+                        //incrementa a linha, se passar da ultima, volta pra primeira
+                        linha_atual = (linha_atual + 1) % linhas_folha;
+                        //calcula a posicao Y da folha que sera mostrada
+                        regiao_y_folha = linha_atual * altura_sprite;
+                    }
+                    //calcula a regiao X da folha que sera mostrada
+                    regiao_x_folha = coluna_atual * largura_sprite;
+                }
+                al_convert_mask_to_alpha(folha_sprite,al_map_rgb(255, 0, 255));
                 DrawPlayer(player);
+                if(player.isJumping)
+                    al_draw_scaled_bitmap(folha_sprite, 1, 2, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
+                    else
+                        al_draw_scaled_bitmap(folha_sprite, regiao_x_folha, regiao_y_folha, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
+
                 if (secondsCount > 20)
-                    DrawDrugnPeace(drugs, DrugFreq, peace);
+                    DrawDrugnPeace(drugs, DrugFreq, peace, player);
 
                 al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
@@ -278,7 +315,6 @@ int main(void)
             al_clear_to_color(al_map_rgb(0,0,0));
         }
     }
-
 
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
