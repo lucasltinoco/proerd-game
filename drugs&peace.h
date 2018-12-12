@@ -15,16 +15,40 @@ void InitDrugnPeace(Drug drugs[], int size, Peace peace[])
         peace[i].boundy = 25;
     }
 }
-void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player)
+void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEGRO_BITMAP *marijuana, ALLEGRO_BITMAP *cocaine)
 {
     for(int i = 0; i < size; i++)
     {
         if(drugs[i].live)
         {
             if(drugs[i].boundy == 50)
+            {
                 al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
+                switch(drugs[i].type)
+                {
+                    case 0: //MACONHA
+                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 64, 0);
+                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y, 0);
+                    break;
+                    case 1: //COCAÍNA
+                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 64, 0);
+                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y, 0);
+                    break;
+                }
+            }
             else
+            {
                 al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 25, drugs[i].x + 25, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                switch(drugs[i].type)
+                {
+                    case 0: //MACONHA
+                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 32, 0);
+                    break;
+                    case 1: //COCAÍNA
+                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 32, 0);
+                    break;
+                }
+            }
         }
         if(peace[i].live)
             al_draw_filled_rectangle(peace[i].x - 25, peace[i].y - 25, peace[i].x + 25, peace[i].y + 25, al_map_rgb(255, 255, 0));
@@ -64,6 +88,15 @@ void StartDrugnPeace(Drug drugs[], int size, Peace peace[])
                 drugs[i].y = (HEIGHT*3/4)-95;
                 drugs[i].live = true;
                 drugs[i].boundy = 50;
+                break;
+            }
+            switch(rand() % 2)
+            {
+                case 0: //MACONHA
+                    drugs[i].type = 0;
+                break;
+                case 1: //COCAÍNA
+                    drugs[i].type = 1;
                 break;
             }
         }
@@ -137,8 +170,8 @@ void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[])
             && peace[i].y + peace[i].boundy > player.y - player.boundy)
             {
                 player.peaces++;
-                if(player.peaces == 2)
-                    drugs[i].speed = drugs[i].speed + 2;
+                if(player.peaces > 0)
+                    drugs[i].speed = drugs[i].speed + 0.1;
                 peace[i].live = false;
             }
             else if(peace[i].x < 0)

@@ -1,5 +1,5 @@
 //Object IDS
-enum IDS{PLAYER, BULLET, ENEMY};
+enum IDS{PLAYER, BULLET, ENEMY, FRIEND};
 
 //Our Player
 struct Player
@@ -28,6 +28,7 @@ struct Drug
 	int speed;
 	int boundx;
 	int boundy;
+	int type;
 };
 
 struct Peace {

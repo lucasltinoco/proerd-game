@@ -51,6 +51,7 @@ int main(void)
     ALLEGRO_BITMAP *fundo_proerd = NULL;
     ALLEGRO_BITMAP *folha_sprite = NULL;
     ALLEGRO_BITMAP *marijuana = NULL;
+    ALLEGRO_BITMAP *cocaine = NULL;
 
     //Initialization Functions
     if(!al_init())										//initialize Allegro
@@ -83,6 +84,8 @@ int main(void)
     leao_proerd = al_load_bitmap("leao_proerd.png");
     logo_proerd = al_load_bitmap("proerd_logo.png");
     folha_sprite = al_load_bitmap("run2.bmp");
+    marijuana = al_load_bitmap("Marijuana.png");
+    cocaine = al_load_bitmap("Cocaine.png");
 
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -303,7 +306,7 @@ int main(void)
                         al_draw_scaled_bitmap(folha_sprite, regiao_x_folha, regiao_y_folha, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
 
                 if (secondsCount > 20)
-                    DrawDrugnPeace(drugs, DrugFreq, peace, player);
+                    DrawDrugnPeace(drugs, DrugFreq, peace, player, marijuana, cocaine);
 
                 al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
