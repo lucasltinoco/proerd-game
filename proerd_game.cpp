@@ -52,6 +52,10 @@ int main(void)
     ALLEGRO_BITMAP *folha_sprite = NULL;
     ALLEGRO_BITMAP *marijuana = NULL;
     ALLEGRO_BITMAP *cocaine = NULL;
+    ALLEGRO_BITMAP *playerdown = NULL;
+    ALLEGRO_BITMAP *beer = NULL;
+    ALLEGRO_BITMAP *background = NULL;
+    ALLEGRO_BITMAP *tile = NULL;
 
     //Initialization Functions
     if(!al_init())										//initialize Allegro
@@ -86,6 +90,10 @@ int main(void)
     folha_sprite = al_load_bitmap("run2.bmp");
     marijuana = al_load_bitmap("Marijuana.png");
     cocaine = al_load_bitmap("Cocaine.png");
+    playerdown = al_load_bitmap("PlayerDown.bmp");
+    beer = al_load_bitmap("beer.png");
+    background = al_load_bitmap("background.png");
+    tile = al_load_bitmap("tile.png");
 
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -251,6 +259,15 @@ int main(void)
         if(redraw && al_is_event_queue_empty(event_queue) && page == 2)
         {
             redraw = false;
+            al_draw_bitmap(background, 0, 0, 0);
+            al_draw_bitmap(tile, 0, HEIGHT*3/4 - 20, 0);
+            al_draw_bitmap(tile, 175, HEIGHT*3/4 - 20, 0);
+            al_draw_bitmap(tile, 350, HEIGHT*3/4 - 20, 0);
+            al_draw_bitmap(tile, 525, HEIGHT*3/4 - 20, 0);
+            al_draw_bitmap(tile, 700, HEIGHT*3/4 - 20, 0);
+            al_draw_bitmap(tile, 875, HEIGHT*3/4 - 20, 0);
+            al_draw_bitmap(tile, 1050, HEIGHT*3/4 - 20, 0);
+
             if(secondsCount > 20)
             {
                 StartDrugnPeace(drugs, DrugFreq, peace);
@@ -266,17 +283,17 @@ int main(void)
                     frameCount1 = 0;
                     secondsCount++;
                 }
-                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 25, 0, "Tempo decorrido: %is", secondsCount);
+                al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 25, 0, "Tempo decorrido: %is", secondsCount);
                 if(secondsCount < 22)
                 {
                     textspeed = textspeed + 4;
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed, HEIGHT/4, 0, "O uso de drogas prejudica o seu futuro e o futuro das pessoas ao seu redor");
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed + 1000, HEIGHT/2, 0, "Por isso, fuja das drogas e consuma só o que te faz bem!");
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4, 0, "Opções:");
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 25, 0, "Tecle ESPAÇO para pular");
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 50, 0, "Tecle ESPAÇO 2x para pular mais alto");
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 75, 0, "Tecle SETA PARA BAIXO para descer enquanto no alto");
-                    al_draw_textf(font18, al_map_rgb(255, 0, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 100, 0, "Tecle SETA PARA BAIXO para abaixar-se no chão");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed, HEIGHT/4, 0, "O uso de drogas prejudica o seu futuro e o futuro das pessoas ao seu redor");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed + 1000, HEIGHT/2, 0, "Por isso, fuja das drogas e consuma só o que te faz bem!");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4, 0, "Opções:");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 25, 0, "Tecle ESPAÇO para pular");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 50, 0, "Tecle ESPAÇO 2x para pular mais alto");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 75, 0, "Tecle SETA PARA BAIXO para descer enquanto no alto");
+                    al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed/2 + 1000, HEIGHT/4 + 100, 0, "Tecle SETA PARA BAIXO para abaixar-se no chão");
                 }
                 frameCount2++;
                 if (frameCount2 >= frames_sprite)
@@ -299,16 +316,19 @@ int main(void)
                     regiao_x_folha = coluna_atual * largura_sprite;
                 }
                 al_convert_mask_to_alpha(folha_sprite,al_map_rgb(255, 0, 255));
+                al_convert_mask_to_alpha(playerdown,al_map_rgb(255, 0, 255));
                 DrawPlayer(player);
-                if(player.isJumping)
+                if(player.y < (HEIGHT*3/4)-25)
                     al_draw_scaled_bitmap(folha_sprite, 1, 2, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
-                    else
-                        al_draw_scaled_bitmap(folha_sprite, regiao_x_folha, regiao_y_folha, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
+                    else if(keys[DOWN] && player.y >= (HEIGHT*3/4)-25)
+                        al_draw_scaled_bitmap(playerdown, 0, 0, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
+                        else
+                            al_draw_scaled_bitmap(folha_sprite, regiao_x_folha, regiao_y_folha, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
 
                 if (secondsCount > 20)
-                    DrawDrugnPeace(drugs, DrugFreq, peace, player, marijuana, cocaine);
+                    DrawDrugnPeace(drugs, DrugFreq, peace, player, marijuana, cocaine, beer);
 
-                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
+                al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "Player has used %i drugs. Player has collected %i good objects", player.drugs, player.peaces);
                 al_draw_line(0, HEIGHT*3/4, WIDTH, HEIGHT*3/4, al_map_rgb(0,0,255), 2);
             }
             else

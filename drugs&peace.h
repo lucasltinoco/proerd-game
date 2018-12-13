@@ -4,18 +4,18 @@ void InitDrugnPeace(Drug drugs[], int size, Peace peace[])
     {
         drugs[i].ID = ENEMY;
         drugs[i].live = false;
-        drugs[i].speed = 10;
+        drugs[i].speed = 7;
         drugs[i].boundx = 25;
         drugs[i].boundy = 25;
 
         peace[i].ID = FRIEND;
         peace[i].live = false;
-        peace[i].speed = 10;
+        peace[i].speed = 7;
         peace[i].boundx = 25;
         peace[i].boundy = 25;
     }
 }
-void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEGRO_BITMAP *marijuana, ALLEGRO_BITMAP *cocaine)
+void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEGRO_BITMAP *marijuana, ALLEGRO_BITMAP *cocaine, ALLEGRO_BITMAP *beer)
 {
     for(int i = 0; i < size; i++)
     {
@@ -23,36 +23,57 @@ void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEG
         {
             if(drugs[i].boundy == 50)
             {
-                al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
                 switch(drugs[i].type)
                 {
                     case 0: //MACONHA
+                        al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
                         al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 64, 0);
-                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y, 0);
+                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 14, 0);
+                        drugs[i].boundx = 25;
                     break;
+
                     case 1: //COCAÍNA
+                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 50, drugs[i].x + 18, drugs[i].y + 50, al_map_rgb(255, 0, 0));
                         al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 64, 0);
-                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y, 0);
+                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 7, 0);
+                        drugs[i].boundx = 18;
+                    break;
+
+                    case 2: //BEER
+                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 50, drugs[i].x + 18, drugs[i].y + 50, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(beer, drugs[i].x - 32, drugs[i].y - 64, 0);
+                        al_draw_bitmap(beer, drugs[i].x - 32, drugs[i].y - 7, 0);
+                        drugs[i].boundx = 18;
                     break;
                 }
             }
             else
             {
-                al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 25, drugs[i].x + 25, drugs[i].y + 25, al_map_rgb(255, 0, 0));
                 switch(drugs[i].type)
                 {
                     case 0: //MACONHA
-                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 32, 0);
+                        al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 25, drugs[i].x + 25, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 39, 0);
+                        drugs[i].boundx = 25;
                     break;
+
                     case 1: //COCAÍNA
-                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 32, 0);
+                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 25, drugs[i].x + 18, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 34, 0);
+                        drugs[i].boundx = 18;
+                    break;
+
+                    case 2: //BEER
+                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 25, drugs[i].x + 18, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(beer, drugs[i].x - 32, drugs[i].y - 34, 0);
+                        drugs[i].boundx = 18;
                     break;
                 }
             }
         }
-        if(peace[i].live)
-            al_draw_filled_rectangle(peace[i].x - 25, peace[i].y - 25, peace[i].x + 25, peace[i].y + 25, al_map_rgb(255, 255, 0));
-    }
+        if(peace[i].live){}
+            //al_draw_filled_rectangle(peace[i].x - 25, peace[i].y - 25, peace[i].x + 25, peace[i].y + 25, al_map_rgb(255, 255, 0));
+  }
 }
 void StartDrugnPeace(Drug drugs[], int size, Peace peace[])
 {
@@ -90,13 +111,18 @@ void StartDrugnPeace(Drug drugs[], int size, Peace peace[])
                 drugs[i].boundy = 50;
                 break;
             }
-            switch(rand() % 2)
+            switch(rand() % 3)
             {
                 case 0: //MACONHA
                     drugs[i].type = 0;
                 break;
+
                 case 1: //COCAÍNA
                     drugs[i].type = 1;
+                break;
+
+                case 2: //BEER
+                    drugs[i].type = 2;
                 break;
             }
         }
