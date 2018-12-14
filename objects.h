@@ -1,7 +1,22 @@
-//Object IDS
+/********************************
+
+* PROERD GAME
+* estruturas de objetos
+
+* IFSC - Florianópolis
+* Programação em Linguagem C
+
+* Lucas  de Lacerda Tinoco
+* Igor Willy Gretter Peters
+
+* Data: 14/12/2018
+* Revisão: 1v0
+
+*********************************/
+//IDS dos Objetos
 enum IDS{PLAYER, BULLET, ENEMY, FRIEND};
 
-//Our Player
+//JOGADOR
 struct Player
 {
 	int ID;
@@ -19,7 +34,7 @@ struct Player
     int drugEffect;
 };
 
-//Drug
+//DROGAS
 struct Drug
 {
 	int ID;
