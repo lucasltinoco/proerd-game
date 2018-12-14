@@ -1,21 +1,23 @@
+//INICIALIZA OBSTÁCULOS
 void InitDrugnPeace(Drug drugs[], int size, Peace peace[])
 {
     for(int i = 0; i < size; i++)
     {
         drugs[i].ID = ENEMY;
         drugs[i].live = false;
-        drugs[i].speed = 7;
+        drugs[i].speed = 8;
         drugs[i].boundx = 25;
         drugs[i].boundy = 25;
 
         peace[i].ID = FRIEND;
         peace[i].live = false;
-        peace[i].speed = 7;
+        peace[i].speed = 8;
         peace[i].boundx = 25;
         peace[i].boundy = 25;
     }
 }
-void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEGRO_BITMAP *marijuana, ALLEGRO_BITMAP *cocaine, ALLEGRO_BITMAP *beer)
+//DESENHA IMAGENS DE OBSTÁCULOS E SELECIONA QUAL OBSTÁCULO DE FORMA ALEATORIA
+void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEGRO_BITMAP *marijuana, ALLEGRO_BITMAP *cocaine, ALLEGRO_BITMAP *beer, ALLEGRO_BITMAP *apple, ALLEGRO_BITMAP *banana, ALLEGRO_BITMAP *pineapple)
 {
     for(int i = 0; i < size; i++)
     {
@@ -26,24 +28,24 @@ void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEG
                 switch(drugs[i].type)
                 {
                     case 0: //MACONHA
-                        al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
+                        //al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
                         al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 64, 0);
                         al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 14, 0);
                         drugs[i].boundx = 25;
                     break;
 
                     case 1: //COCAÍNA
-                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 50, drugs[i].x + 18, drugs[i].y + 50, al_map_rgb(255, 0, 0));
-                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 64, 0);
-                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 7, 0);
-                        drugs[i].boundx = 18;
+                        //al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 50, drugs[i].x + 18, drugs[i].y + 50, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(cocaine, drugs[i].x - 28, drugs[i].y - 64, 0);
+                        al_draw_bitmap(cocaine, drugs[i].x - 28, drugs[i].y + 14, 0);
+                        drugs[i].boundx = 25;
                     break;
 
                     case 2: //BEER
-                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 50, drugs[i].x + 18, drugs[i].y + 50, al_map_rgb(255, 0, 0));
-                        al_draw_bitmap(beer, drugs[i].x - 32, drugs[i].y - 64, 0);
-                        al_draw_bitmap(beer, drugs[i].x - 32, drugs[i].y - 7, 0);
-                        drugs[i].boundx = 18;
+                        //al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 50, drugs[i].x + 25, drugs[i].y + 50, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(beer, drugs[i].x - 30, drugs[i].y - 64, 0);
+                        al_draw_bitmap(beer, drugs[i].x - 30, drugs[i].y - 14, 0);
+                        drugs[i].boundx = 25;
                     break;
                 }
             }
@@ -52,29 +54,45 @@ void DrawDrugnPeace(Drug drugs[], int size, Peace peace[], Player &player, ALLEG
                 switch(drugs[i].type)
                 {
                     case 0: //MACONHA
-                        al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 25, drugs[i].x + 25, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                        //al_draw_filled_rectangle(drugs[i].x - 25, drugs[i].y - 25, drugs[i].x + 25, drugs[i].y + 25, al_map_rgb(255, 0, 0));
                         al_draw_bitmap(marijuana, drugs[i].x - 32, drugs[i].y - 39, 0);
                         drugs[i].boundx = 25;
                     break;
 
                     case 1: //COCAÍNA
-                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 25, drugs[i].x + 18, drugs[i].y + 25, al_map_rgb(255, 0, 0));
-                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 34, 0);
-                        drugs[i].boundx = 18;
+                        //al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 25, drugs[i].x + 18, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(cocaine, drugs[i].x - 32, drugs[i].y - 14, 0);
+                        drugs[i].boundx = 25;
                     break;
 
                     case 2: //BEER
-                        al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 25, drugs[i].x + 18, drugs[i].y + 25, al_map_rgb(255, 0, 0));
-                        al_draw_bitmap(beer, drugs[i].x - 32, drugs[i].y - 34, 0);
-                        drugs[i].boundx = 18;
+                        //al_draw_filled_rectangle(drugs[i].x - 18, drugs[i].y - 25, drugs[i].x + 18, drugs[i].y + 25, al_map_rgb(255, 0, 0));
+                        al_draw_bitmap(beer, drugs[i].x - 30, drugs[i].y - 34, 0);
+                        drugs[i].boundx = 25;
                     break;
                 }
             }
         }
-        if(peace[i].live){}
+        if(peace[i].live){
             //al_draw_filled_rectangle(peace[i].x - 25, peace[i].y - 25, peace[i].x + 25, peace[i].y + 25, al_map_rgb(255, 255, 0));
+            switch(peace[i].type)
+            {
+                case 0: //MAÇÃ
+                    al_draw_bitmap(apple, peace[i].x - 32, peace[i].y - 32, 0);
+                break;
+
+                case 1: //BANANA
+                    al_draw_bitmap(banana, peace[i].x - 32, peace[i].y - 32, 0);
+                break;
+
+                case 2: //ABACAXI
+                    al_draw_bitmap(pineapple, peace[i].x - 26, peace[i].y - 32, 0);
+                break;
+            }
+        }
   }
 }
+//INICIA OBSTÁCULOS
 void StartDrugnPeace(Drug drugs[], int size, Peace peace[])
 {
     for(int i = 0; i < size; i++)
@@ -157,9 +175,24 @@ void StartDrugnPeace(Drug drugs[], int size, Peace peace[])
                     peace[i].live = true;
                 break;
             }
+            switch(rand() % 3)
+            {
+                case 0: //MAÇÃ
+                    peace[i].type = 0;
+                break;
+
+                case 1: //BANANA
+                    peace[i].type = 1;
+                break;
+
+                case 2: //ABACAXI
+                    peace[i].type = 2;
+                break;
+            }
         }
     }
 }
+//ATUALIZA A POSIÇÃO DOS OBJETOS
 void UpdateDrugnPeace(Drug drugs[], int size, Peace peace[])
 {
     for(int i = 0; i < size; i++)
@@ -171,8 +204,10 @@ void UpdateDrugnPeace(Drug drugs[], int size, Peace peace[])
             peace[i].x -= peace[i].speed;
     }
 }
-void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[])
+//IDENTIFICA COLISÃO COM O JOGADOR E FIM DE MAPA
+void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[], int drugCount)
 {
+    drugCount++;
     for(int i = 0; i < cSize; i++)
     {
         if(drugs[i].live)
@@ -184,6 +219,18 @@ void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[])
             {
                 player.drugs++;
                 drugs[i].live = false;
+                switch(drugs[i].type)
+                {
+                    case 0:
+                        player.drugEffect = 1; // Efeito da Maconha
+                        break;
+                    case 1:
+                        player.drugEffect = 2;
+                        break;
+                    case 2:
+                        player.drugEffect = 3;
+                        break;
+                };
             }
             else if(drugs[i].x < 0)
                 drugs[i].live = false;
@@ -196,8 +243,6 @@ void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[])
             && peace[i].y + peace[i].boundy > player.y - player.boundy)
             {
                 player.peaces++;
-                if(player.peaces > 0)
-                    drugs[i].speed = drugs[i].speed + 0.1;
                 peace[i].live = false;
             }
             else if(peace[i].x < 0)

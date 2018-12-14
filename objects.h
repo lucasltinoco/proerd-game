@@ -16,6 +16,7 @@ struct Player
     bool isJumping;
     bool isRising;
     bool firstSpace;
+    int drugEffect;
 };
 
 //Drug
@@ -31,6 +32,7 @@ struct Drug
 	int type;
 };
 
+//FRUTAS
 struct Peace {
 	int ID;
 	int x;
@@ -39,5 +41,13 @@ struct Peace {
 	int speed;
     int boundx;
 	int boundy;
+    int type;
 };
 
+//struct Cloud {
+//    int x;
+//    int y;
+//    int speed;
+//    int type;
+//    bool live;
+//};
