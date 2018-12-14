@@ -1,6 +1,7 @@
 /********************************
 
 * PROERD GAME
+* main
 
 * IFSC - Florianópolis
 * Programação em Linguagem C
@@ -29,7 +30,7 @@
 
 int main(void)
 {
-    //primitive variable
+    //variáveis primitivas
     bool done = false; //variável do loop principal
     bool redraw = true; //variável
     const int FPS = 60; //definição da velocidade em frames por segundo
@@ -50,13 +51,13 @@ int main(void)
     int frames_sprite = 3; //quantos frames devem se passar para atualizar para o proximo sprite
     int ground_x1 = 0, ground_x2 = 1000; //posicao X Y da janela em que sera mostrado o sprite
 
-    //object variables
+    //variáveis de objeto
     Player player;
     Drug drugs[Freq];
     Peace peace[Freq];
     //Cloud clouds[Freq];
 
-    //Allegro variables
+    //variáveis do Allegro
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_TIMER *timer = NULL;
@@ -83,16 +84,17 @@ int main(void)
     //ALLEGRO_SAMPLE *musica_proerd=NULL;
 
 
-    //Initialization Functions
-    if(!al_init())										//initialize Allegro
+    //Funções de inicialização
+    if(!al_init()) //inicializa Allegro
         return -1;
 
-    display = al_create_display(WIDTH, HEIGHT);			//create our display object
+    display = al_create_display(WIDTH, HEIGHT); //cria Display
 
-    if(!display)										//test display object
+    if(!display) //testa display 
         return -1;
-
-    al_init_primitives_addon();
+    
+    //Carrega addons necessários
+    al_init_primitives_addon(); 
     al_install_keyboard();
     al_init_font_addon();
     al_init_ttf_addon();
@@ -374,22 +376,15 @@ int main(void)
                 frameCount2++;
                 if (frameCount2 >= frames_sprite)
                 {
-                    //reseta cont_frames
-                    frameCount2=0;
-                    //incrementa a coluna atual, para mostrar o proximo sprite
-                    coluna_atual++;
-                    //se coluna atual passou da ultima coluna
+                    frameCount2=0; //reseta cont_frames
+                    coluna_atual++; //incrementa a coluna atual, para mostrar o proximo sprite se coluna atual passou da ultima coluna
                     if (coluna_atual >= colunas_folha)
                     {
-                        //volta pra coluna inicial
-                        coluna_atual=0;
-                        //incrementa a linha, se passar da ultima, volta pra primeira
-                        linha_atual = (linha_atual + 1) % linhas_folha;
-                        //calcula a posicao Y da folha que sera mostrada
-                        regiao_y_folha = linha_atual * altura_sprite;
+                        coluna_atual=0;  //volta pra coluna inicial
+                        linha_atual = (linha_atual + 1) % linhas_folha;  //incrementa a linha, se passar da ultima, volta pra primeira
+                        regiao_y_folha = linha_atual * altura_sprite;  //calcula a posicao Y da folha que sera mostrada
                     }
-                    //calcula a regiao X da folha que sera mostrada
-                    regiao_x_folha = coluna_atual * largura_sprite;
+                    regiao_x_folha = coluna_atual * largura_sprite;  //calcula a regiao X da folha que sera mostrada
                 }
 
                 al_convert_mask_to_alpha(folha_sprite,al_map_rgb(255, 0, 255));
