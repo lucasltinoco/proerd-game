@@ -1,3 +1,18 @@
+/********************************
+
+* PROERD GAME
+* variáveis globais
+
+* IFSC - Florianópolis
+* Programação em Linguagem C
+
+* Lucas  de Lacerda Tinoco
+* Igor Willy Gretter Peters
+
+* Data: 14/12/2018
+* Revisão: 1v0
+
+*********************************/
 //GLOBALS==============================
 const int WIDTH = 1000;
 const int HEIGHT = 600;
