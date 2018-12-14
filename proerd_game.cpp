@@ -443,6 +443,22 @@ int main(void)
             al_flip_display();
             al_clear_to_color(al_map_rgb(0,0,0));
         }
+        //PÁGINA DE CRÉDITOS
+        if(redraw && al_is_event_queue_empty(event_queue) && page == 4)
+        {
+            redraw = false;
+            al_draw_bitmap(fundo_proerd, 0, 0, 0);
+            al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/4 - 100, ALLEGRO_ALIGN_CENTRE, "CRÉDITOS");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Autor: Lucas de Lacerda Tinoco");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 25, ALLEGRO_ALIGN_CENTRE, "Agradecimentos:");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 50, ALLEGRO_ALIGN_CENTRE, "Ao Professor pelo conhecimento passado;");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 75, ALLEGRO_ALIGN_CENTRE, "Ao Proerd, pelo serviço prestado;");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 100, ALLEGRO_ALIGN_CENTRE, "Ao Vargas pelo apoio técnico;");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 125, ALLEGRO_ALIGN_CENTRE, "Ao Igor pelo apoio moral;");
+            al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT*3/4, ALLEGRO_ALIGN_CENTRE, "Voltar");
+            al_flip_display();
+            al_clear_to_color(al_map_rgb(0,0,0));
+        }
     }
     //DESTROI OBJETOS
     al_destroy_event_queue(event_queue);
