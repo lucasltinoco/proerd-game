@@ -234,18 +234,7 @@ void CollideDrugnPeace(Drug drugs[], int cSize, Player &player, Peace peace[], i
             {
                 player.drugs++;
                 drugs[i].live = false;
-                switch(drugs[i].type)
-                {
-                    case 0:
-                        player.drugEffect = 1; // Efeito da Maconha
-                        break;
-                    case 1:
-                        player.drugEffect = 2;
-                        break;
-                    case 2:
-                        player.drugEffect = 3;
-                        break;
-                };
+                player.drugEffect = true; // Efeito da Droga
             }
             else if(drugs[i].x < 0)
                 drugs[i].live = false;

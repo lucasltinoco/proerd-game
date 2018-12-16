@@ -26,7 +26,6 @@
 #include "objects.h" //estruturas
 #include "player.h" //funções do jogador
 #include "drugs&peace.h" //funções dos obstáculos
-//#include "clouds.h"
 
 int main(void)
 {
@@ -42,7 +41,7 @@ int main(void)
     int frameCount2 = 0; //segunda contagem de frames
     int secondsCount = 0; //contagem em segundos
     int drugCount = 0; //contagem de definição de efeitos das drogas
-    int GameTime = 0; //Contador do tempo jogado
+    int GameTime = -1; //Contador do tempo jogado
     int textspeed = 0; //velocidade do texto de inicialização do jogo
     int altura_sprite = 140, largura_sprite = 108; //largura e altura de cada sprite dentro da folha
     int colunas_folha = 4, coluna_atual = 0; //quantos sprites tem em cada linha da folha, e a atualmente mostrada
@@ -55,7 +54,6 @@ int main(void)
     Player player;
     Drug drugs[Freq];
     Peace peace[Freq];
-    //Cloud clouds[Freq];
 
     //variáveis do Allegro
     ALLEGRO_DISPLAY *display = NULL;
@@ -66,7 +64,8 @@ int main(void)
     ALLEGRO_FONT *font60 = NULL;
     ALLEGRO_BITMAP *logo_proerd = NULL;
     ALLEGRO_BITMAP *leao_proerd = NULL;
-    ALLEGRO_BITMAP *fundo_proerd = NULL;
+    ALLEGRO_BITMAP *fundo1_proerd = NULL;
+    ALLEGRO_BITMAP *fundo2_proerd = NULL;
     ALLEGRO_BITMAP *folha_sprite = NULL;
     ALLEGRO_BITMAP *marijuana = NULL;
     ALLEGRO_BITMAP *cocaine = NULL;
@@ -76,13 +75,6 @@ int main(void)
     ALLEGRO_BITMAP *apple = NULL;
     ALLEGRO_BITMAP *banana = NULL;
     ALLEGRO_BITMAP *pineapple = NULL;
-    //ALLEGRO_BITMAP *cloud1 = NULL;
-    //ALLEGRO_BITMAP *cloud2 = NULL;
-    //ALLEGRO_BITMAP *cloud3 = NULL;
-    //ALLEGRO_BITMAP *cloud4 = NULL;
-    //ALLEGRO_BITMAP *cloud5 = NULL;
-    //ALLEGRO_SAMPLE *musica_proerd=NULL;
-
 
     //Funções de inicialização
     if(!al_init()) //inicializa Allegro
@@ -90,18 +82,15 @@ int main(void)
 
     display = al_create_display(WIDTH, HEIGHT); //cria Display
 
-    if(!display) //testa display 
+    if(!display) //testa display
         return -1;
-    
+
     //Carrega addons necessários
-    al_init_primitives_addon(); 
+    al_init_primitives_addon();
     al_install_keyboard();
     al_init_font_addon();
     al_init_ttf_addon();
     al_init_image_addon();
-    //al_install_audio();
-    //al_init_acodec_addon();
-    //al_reserve_samples(1);
 
     event_queue = al_create_event_queue();
     timer = al_create_timer(1.0 / FPS);
@@ -109,7 +98,6 @@ int main(void)
     srand(time(NULL));
     InitPlayer(player); //inicializa jogador
     InitDrugnPeace(drugs, Freq, peace); //inicializa obstáculos
-    //InitCloud(clouds, DrugFreq);
 
     //carregamento de fontes
     font18 = al_load_font("Comic Book.ttf", 18, 0);
@@ -117,7 +105,8 @@ int main(void)
     font60 = al_load_font("Comic Book.ttf", 60, 0);
 
     //carregamento de imagens
-    fundo_proerd = al_load_bitmap("fundo_proerd.png");
+    fundo1_proerd = al_load_bitmap("fundo1_proerd.png");
+    fundo2_proerd = al_load_bitmap("fundo2_proerd.png");
     leao_proerd = al_load_bitmap("leao_proerd.png");
     logo_proerd = al_load_bitmap("proerd_logo.png");
     folha_sprite = al_load_bitmap("run2.bmp");
@@ -129,14 +118,6 @@ int main(void)
     apple = al_load_bitmap("apple.png");
     banana = al_load_bitmap("banana.png");
     pineapple = al_load_bitmap("pineapple.png");
-    //cloud1 = al_load_bitmap("cloud1.png");
-    //cloud2 = al_load_bitmap("cloud2.png");
-    //cloud3 = al_load_bitmap("cloud3.png");
-    //cloud4 = al_load_bitmap("cloud4.png");
-    //cloud5 = al_load_bitmap("cloud5.png");
-
-    //musica_proerd = al_load_sample("musica_proerd.ogg");
-    //al_play_sample(musica_proerd, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_LOOP,NULL);
 
     //REGISTRO DE EVENTOS
     al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -190,42 +171,10 @@ int main(void)
                 }
             }
 
-            //CONFIRMAÇÃO NO MENU INICIAL E FINAL
-            if(keys[ENTER])
-            {
-                if(page == 1)
-                {
-                    switch(firstoptions)
-                    {
-                    case 0:
-                        page = 2;
-                        break;
-
-                    case 1:
-                        page = 4;
-                        break;
-
-                    case 2:
-                        al_destroy_display(display);
-                        break;
-                    }
-                }
-                if(page == 3)
-                {
-                    if(PlayAgain)
-                    {
-                        redraw = true;
-                        page = 2;
-                    }
-                    else
-                        al_destroy_display(display);
-                }
-            }
-
             //SE O JOGADOR ATINGE 5 DROGAS, ACABA O JOGO
             if(!isGameOver)
             {
-                if(player.drugs > 4)
+                if(player.drugs > 0)
                     isGameOver = true;
             }
         }
@@ -293,15 +242,47 @@ int main(void)
                 break;
             case ALLEGRO_KEY_ENTER:
                 keys[ENTER] = false;
+                if(page == 1)
+                {
+                    switch(firstoptions)
+                    {
+                    case 0:
+                        page = 2;
+                        break;
+
+                    case 1:
+                        page = 4;
+                        break;
+
+                    case 2:
+                        done = true;
+                        break;
+                    }
+                }
+                else if(page == 3)
+                {
+                    if(PlayAgain)
+                    {
+                        #include "reinit.h"
+                        page = 2;
+                    }
+                    else
+                        done = true;
+                }
+                else if(page == 4)
+                {
+                        page = 1;
+                }
                 break;
             }
         }
+
         //PÁGINA DO MENU DE INICIALIZAÇÃO
         if(redraw && al_is_event_queue_empty(event_queue) && page == 1)
         {
             redraw = false;
             //CARREGA FUNDO E IMAGENS
-            al_draw_bitmap(fundo_proerd, 0, 0, 0);
+            al_draw_bitmap(fundo1_proerd, 0, 0, 0);
             al_draw_bitmap(leao_proerd, WIDTH/4 - 480/2, 300, 0);
             al_draw_bitmap(logo_proerd, WIDTH/4 - 500/2, HEIGHT/16 - 50, 0);
             //DESENHA OPÇÕES
@@ -334,34 +315,30 @@ int main(void)
         if(redraw && al_is_event_queue_empty(event_queue) && page == 2)
         {
             redraw = false;
-            al_clear_to_color(al_map_rgb(91,206,203)); //DESENHA FUNDO
-            al_draw_bitmap(tile, ground_x1, HEIGHT*3/4 - 20, 0); //DESENHA CHÃO SE MOVENDO
-            al_draw_bitmap(tile, ground_x2, HEIGHT*3/4 - 20, 0);
-
-            if(secondsCount > 12) //INICIA DE FATO O JOGO DEPOIS DE INSTRUÇÕES
-            {
-                StartDrugnPeace(drugs, Freq, peace); //INICIA OBSTÁCULOS
-                UpdateDrugnPeace(drugs, Freq, peace); //ATUALIZA OBSTÁCULOS
-                CollideDrugnPeace(drugs, Freq, player, peace, drugCount); //IDENTIFICA COLISÕES
-                al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH/4, 25, ALLEGRO_ALIGN_CENTRE, "Tempo: %is", GameTime); //MOSTRA STATUS DO JOGADOR
-                al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH/2, 25, ALLEGRO_ALIGN_CENTRE, "Drugs: %is", player.drugs);
-                al_draw_textf(font18, al_map_rgb(255, 255, 255), 3*WIDTH/4, 25, ALLEGRO_ALIGN_CENTRE, "Fruits: %is", player.peaces);
-            }
             if(!isGameOver)
             {
-                //StartCloud(clouds, Freq);
-                //UpdateCloud(clouds, Freq);
-                //DrawCloud(clouds, Freq, cloud1, cloud2, cloud3, cloud4, cloud5);
+                al_clear_to_color(al_map_rgb(91,206,203)); //DESENHA FUNDO
+                al_draw_bitmap(tile, ground_x1, HEIGHT*3/4 - 20, 0); //DESENHA CHÃO SE MOVENDO
+                al_draw_bitmap(tile, ground_x2, HEIGHT*3/4 - 20, 0);
+
+                if(secondsCount > 14) //INICIA DE FATO O JOGO DEPOIS DE INSTRUÇÕES
+                {
+                    StartDrugnPeace(drugs, Freq, peace); //INICIA OBSTÁCULOS
+                    UpdateDrugnPeace(drugs, Freq, peace); //ATUALIZA OBSTÁCULOS
+                    CollideDrugnPeace(drugs, Freq, player, peace, drugCount); //IDENTIFICA COLISÕES
+                    al_draw_textf(font50, al_map_rgb(255, 255, 255), WIDTH/4, 25, ALLEGRO_ALIGN_CENTRE, "Tempo: %is", GameTime); //MOSTRA STATUS DO JOGADOR
+                    al_draw_textf(font50, al_map_rgb(255, 255, 255), 3*WIDTH/4, 25, ALLEGRO_ALIGN_CENTRE, "Frutas: %i", player.peaces);
+                }
                 //CONTAGEM DE FRAMES E SEGUNDOS
                 frameCount1++;
                 if(frameCount1 == 60)
                 {
                     frameCount1 = 0;
                     secondsCount++;
-                    if(secondsCount > 12)
+                    if(secondsCount > 14)
                         GameTime++;
                 }
-                if(secondsCount < 15) //ESCREVE TEXTO DE INICIALIZAÇÃO
+                if(secondsCount < 14) //ESCREVE TEXTO DE INICIALIZAÇÃO
                 {
                     textspeed = textspeed + 4;
                     al_draw_textf(font18, al_map_rgb(255, 255, 255), WIDTH - textspeed, HEIGHT/4, 0, "O uso de drogas prejudica o seu futuro e o futuro das pessoas ao seu redor");
@@ -389,16 +366,6 @@ int main(void)
 
                 al_convert_mask_to_alpha(folha_sprite,al_map_rgb(255, 0, 255));
                 al_convert_mask_to_alpha(playerdown,al_map_rgb(255, 0, 255));
-                UpdatePlayer(player); //ATUALIZA JOGADOR CONFORME EFEITOS DAS DROGAS
-                if(player.drugEffect > 0)
-                {
-                    drugCount++; //CONTA O TEMPO PARA PASSAR O EFEITO
-                    if(drugCount >= 300)
-                    {
-                        player.drugEffect = 0;
-                        drugCount = 0;
-                    }
-                }
                 DrawPlayer(player); //DESENHA JOGADOR
                 if(player.y < (HEIGHT*3/4)-25)
                     al_draw_scaled_bitmap(folha_sprite, 1, 2, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
@@ -407,25 +374,25 @@ int main(void)
                         else
                             al_draw_scaled_bitmap(folha_sprite, regiao_x_folha, regiao_y_folha, 108, 140, player.x - 27, player.y - 35, 54, 70, 0);
 
-                if (secondsCount > 12)
+                if (secondsCount > 14)
                     DrawDrugnPeace(drugs, Freq, peace, player, marijuana, cocaine, beer, apple, banana, pineapple); //DESENHA OBSTÁCULOS
             }
             else
-            {
                 page = 3;
-            }
 
             al_flip_display();
             al_clear_to_color(al_map_rgb(0,0,0));
         }
+
         //PÁGINA FINAL
         if(redraw && al_is_event_queue_empty(event_queue) && page == 3)
         {
+            redraw = false;
             //MOSTRA INFORMAÇÕES DO JOGO
-            al_clear_to_color(al_map_rgb(91, 206, 203));
+            al_draw_bitmap(fundo2_proerd, 0, 0, 0);
             al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/4 - 100, ALLEGRO_ALIGN_CENTRE, "GAME OVER!");
-            al_draw_textf(font50, al_map_rgb(0, 0, 0), WIDTH/2, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Frutas Consumidas: %i", player.peaces);
-            al_draw_textf(font50, al_map_rgb(0, 0, 0), WIDTH/2, HEIGHT/4 + 100, ALLEGRO_ALIGN_CENTRE, "Tempo: %is", GameTime);
+            al_draw_textf(font50, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Frutas Consumidas: %i", player.peaces);
+            al_draw_textf(font50, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/4 + 100, ALLEGRO_ALIGN_CENTRE, "Tempo: %is", GameTime);
             //APRESENTA OPÇÕES DE JOGAR NOVAMENTE OU SAIR
             if(PlayAgain)
             {
@@ -443,11 +410,11 @@ int main(void)
             al_flip_display();
             al_clear_to_color(al_map_rgb(0,0,0));
         }
+
         //PÁGINA DE CRÉDITOS
         if(redraw && al_is_event_queue_empty(event_queue) && page == 4)
         {
-            redraw = false;
-            al_draw_bitmap(fundo_proerd, 0, 0, 0);
+            al_draw_bitmap(fundo1_proerd, 0, 0, 0);
             al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT/4 - 100, ALLEGRO_ALIGN_CENTRE, "CRÉDITOS");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Autor: Lucas de Lacerda Tinoco");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 25, ALLEGRO_ALIGN_CENTRE, "Agradecimentos:");
@@ -455,17 +422,28 @@ int main(void)
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 75, ALLEGRO_ALIGN_CENTRE, "Ao Proerd, pelo serviço prestado;");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 100, ALLEGRO_ALIGN_CENTRE, "Ao Vargas pelo apoio técnico;");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 125, ALLEGRO_ALIGN_CENTRE, "Ao Igor pelo apoio moral;");
-            al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT*3/4, ALLEGRO_ALIGN_CENTRE, "Voltar");
+            al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT*3/4, ALLEGRO_ALIGN_CENTRE, "Voltar [ENTER]");
             al_flip_display();
             al_clear_to_color(al_map_rgb(0,0,0));
         }
     }
+
     //DESTROI OBJETOS
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
     al_destroy_bitmap(logo_proerd);
     al_destroy_bitmap(leao_proerd);
-    al_destroy_bitmap(fundo_proerd);
+    al_destroy_bitmap(fundo1_proerd);
+    al_destroy_bitmap(fundo2_proerd);
+    al_destroy_bitmap(folha_sprite);
+    al_destroy_bitmap(marijuana);
+    al_destroy_bitmap(cocaine);
+    al_destroy_bitmap(playerdown);
+    al_destroy_bitmap(beer);
+    al_destroy_bitmap(tile);
+    al_destroy_bitmap(apple);
+    al_destroy_bitmap(banana);
+    al_destroy_bitmap(pineapple);
     al_destroy_font(font18);
     al_destroy_font(font50);
     al_destroy_font(font60);

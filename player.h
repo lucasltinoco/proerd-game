@@ -65,34 +65,4 @@ void DrawPlayer(Player &player)
         //al_draw_filled_rectangle(player.x-20, player.y - 25, player.x + 20, player.y + 25, al_map_rgb(0, 255, 0));
     }
 }
-//ATUALIZA VELOCIDADE E GRAVIDADE BASEADO NO EFEITO DAS DROGAS
-void UpdatePlayer (Player &player)
-{
-    if(!player.isJumping)
-    {
-        switch(player.drugEffect)
-        {
-            case 0:
-                player.speed = 10;
-                player.gravity = 0.4;
-                player.y = (HEIGHT*3/4)-25;
-                break;
-            case 1:
-                player.speed = 0.0001;
-                player.gravity = 0.2;
-                player.y = (HEIGHT*3/4)-25;
-                break;
-            case 2:
-                player.speed = 1000;
-                player.gravity = 0.3;
-                player.y = (HEIGHT*3/4)-25;
-                break;
-            case 3:
-                player.speed = 1000;
-                player.gravity = 0.6;
-                player.y = (HEIGHT*3/4)-25;
-                break;
-        };
-    }
-}
 
