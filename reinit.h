@@ -1,3 +1,17 @@
+/***************************
+
+* PROERD GAME
+* reinicialização do jogo
+
+* IFSC - Florianópolis
+* Programação em Linguagem C
+
+* Lucas  de Lacerda Tinoco
+
+* Data: 16/12/2018
+* Revisão: 1v0
+
+****************************/
 //variáveis primitivas
     done = false; //variável do loop principal
     redraw = true; //variável

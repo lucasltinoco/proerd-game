@@ -1,18 +1,17 @@
-/********************************
+/***************************
 
 * PROERD GAME
-* main
+* principal
 
 * IFSC - Florianópolis
 * Programação em Linguagem C
 
 * Lucas  de Lacerda Tinoco
-* Igor Willy Gretter Peters
 
-* Data: 14/12/2018
+* Data: 16/12/2018
 * Revisão: 1v0
 
-*********************************/
+****************************/
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -75,6 +74,7 @@ int main(void)
     ALLEGRO_BITMAP *apple = NULL;
     ALLEGRO_BITMAP *banana = NULL;
     ALLEGRO_BITMAP *pineapple = NULL;
+    ALLEGRO_SAMPLE *musica_proerd;
 
     //Funções de inicialização
     if(!al_init()) //inicializa Allegro
@@ -91,18 +91,12 @@ int main(void)
     al_init_font_addon();
     al_init_ttf_addon();
     al_init_image_addon();
-    //al_install_audio();
-    //al_init_acodec_addon();
+    al_install_audio();
+    al_init_acodec_addon();
 
-    //al_reserve_samples(2);
-
-    //ALLEGRO_SAMPLE *musica_proerd;
-    //musica_proerd = al_load_sample("proerd_song.ogg");
-    //ALLEGRO_SAMPLE_INSTANCE *instance_proerd;
-    //instance_proerd = al_create_sample_instance(musica_proerd);
-
-    //al_set_sample_instance_playmode(instance_proerd, ALLEGRO_PLAYMODE_LOOP);
-    //al_attach_sample_instance_to_mixer(instance_proerd, al_get_default_mixer());
+    al_reserve_samples(2); //reserva espaço para sample
+    musica_proerd = al_load_sample("proerd_song.ogg"); //carrega música
+    al_play_sample(musica_proerd,0.2,0,1,ALLEGRO_PLAYMODE_LOOP, NULL); //toca em loop
 
     event_queue = al_create_event_queue();
     timer = al_create_timer(1.0 / FPS);
@@ -135,8 +129,6 @@ int main(void)
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_display_event_source(display));
-
-    //al_play_sample_instance(instance_proerd);
 
     al_start_timer(timer);
 
@@ -186,7 +178,7 @@ int main(void)
                 }
             }
 
-            //SE O JOGADOR ATINGE 5 DROGAS, ACABA O JOGO
+            //SE O JOGADOR ATINGE 1 DROGA, ACABA O JOGO
             if(!isGameOver)
             {
                 if(player.drugs > 0)
@@ -300,6 +292,7 @@ int main(void)
             al_draw_bitmap(fundo1_proerd, 0, 0, 0);
             al_draw_bitmap(leao_proerd, WIDTH/4 - 480/2, 300, 0);
             al_draw_bitmap(logo_proerd, WIDTH/4 - 500/2, HEIGHT/16 - 50, 0);
+
             //DESENHA OPÇÕES
             switch(firstoptions)
             {
@@ -434,9 +427,9 @@ int main(void)
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4, ALLEGRO_ALIGN_CENTRE, "Autor: Lucas de Lacerda Tinoco");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 25, ALLEGRO_ALIGN_CENTRE, "Agradecimentos:");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 50, ALLEGRO_ALIGN_CENTRE, "Ao Professor pelo conhecimento passado;");
-            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 75, ALLEGRO_ALIGN_CENTRE, "Ao Proerd, pelo serviço prestado;");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 75, ALLEGRO_ALIGN_CENTRE, "Ao Proerd pelo serviço prestado;");
             al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 100, ALLEGRO_ALIGN_CENTRE, "Ao Vargas pelo apoio técnico;");
-            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 125, ALLEGRO_ALIGN_CENTRE, "Ao Igor pelo apoio moral;");
+            al_draw_textf(font18, al_map_rgb(255,0,0), WIDTH/2, HEIGHT/4 + 125, ALLEGRO_ALIGN_CENTRE, "Ao Igor pelo apoio moral.");
             al_draw_text(font60, al_map_rgb(255, 0, 0), WIDTH/2, HEIGHT*3/4, ALLEGRO_ALIGN_CENTRE, "Voltar [ENTER]");
             al_flip_display();
             al_clear_to_color(al_map_rgb(0,0,0));
@@ -462,8 +455,7 @@ int main(void)
     al_destroy_font(font18);
     al_destroy_font(font50);
     al_destroy_font(font60);
-    //al_destroy_sample(musica_proerd);
-    //al_destroy_sample_instance(instance_proerd);
+    al_destroy_sample(musica_proerd);
     al_destroy_display(display);
 
     return 0;

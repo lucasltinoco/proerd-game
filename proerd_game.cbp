@@ -32,7 +32,27 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="Comic Book.ttf" />
+		<Unit filename="Marijuana.png" />
+		<Unit filename="PlayerDown.bmp" />
+		<Unit filename="apple.png" />
+		<Unit filename="banana.png" />
+		<Unit filename="beer.png" />
+		<Unit filename="cocaina-png.png" />
+		<Unit filename="drugs&amp;peace.h" />
+		<Unit filename="fundo1_proerd.png" />
+		<Unit filename="fundo2_proerd.png" />
+		<Unit filename="globals.h" />
+		<Unit filename="leao_proerd.png" />
+		<Unit filename="objects.h" />
+		<Unit filename="pineapple.png" />
+		<Unit filename="player.h" />
+		<Unit filename="proerd_game.cpp" />
+		<Unit filename="proerd_logo.png" />
+		<Unit filename="proerd_song.ogg" />
+		<Unit filename="reinit.h" />
+		<Unit filename="run2.bmp" />
+		<Unit filename="tile.png" />
 		<Extensions>
 			<code_completion />
 			<debugger />

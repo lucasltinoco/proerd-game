@@ -1,0 +1,51 @@
+# depslib dependency file v1.0
+1545007181 source:/home/lucasltinoco/codeblocks_projects/proerd-game-master/proerd_game.cpp
+	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
+	<allegro5/allegro_font.h>
+	<allegro5/allegro_ttf.h>
+	<allegro5/allegro_image.h>
+	<allegro5/allegro_audio.h>
+	<allegro5/allegro_acodec.h>
+	<stdio.h>
+	"globals.h"
+	"objects.h"
+	"player.h"
+	"drugs&peace.h"
+	"reinit.h"
+
+1544801174 /home/lucasltinoco/codeblocks_projects/proerd-game-master/globals.h
+
+1544982747 /home/lucasltinoco/codeblocks_projects/proerd-game-master/objects.h
+
+1544992624 /home/lucasltinoco/codeblocks_projects/proerd-game-master/player.h
+
+1544982548 /home/lucasltinoco/codeblocks_projects/proerd-game-master/drugs&peace.h
+
+1544993953 /home/lucasltinoco/codeblocks_projects/proerd-game-master/reinit.h
+
+1544999918 source:/home/lucasltinoco/codeblocks_projects/proerd_game/proerd_game.cpp
+	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
+	<allegro5/allegro_font.h>
+	<allegro5/allegro_ttf.h>
+	<allegro5/allegro_image.h>
+	<allegro5/allegro_audio.h>
+	<allegro5/allegro_acodec.h>
+	<stdio.h>
+	"globals.h"
+	"objects.h"
+	"player.h"
+	"drugs&peace.h"
+	"reinit.h"
+
+1544801174 /home/lucasltinoco/codeblocks_projects/proerd_game/globals.h
+
+1544982747 /home/lucasltinoco/codeblocks_projects/proerd_game/objects.h
+
+1544992624 /home/lucasltinoco/codeblocks_projects/proerd_game/player.h
+
+1544982548 /home/lucasltinoco/codeblocks_projects/proerd_game/drugs&peace.h
+
+1544993953 /home/lucasltinoco/codeblocks_projects/proerd_game/reinit.h
+

@@ -1,4 +1,4 @@
-/********************************
+/***************************
 
 * PROERD GAME
 * funções do jogador
@@ -7,12 +7,11 @@
 * Programação em Linguagem C
 
 * Lucas  de Lacerda Tinoco
-* Igor Willy Gretter Peters
 
-* Data: 14/12/2018
+* Data: 16/12/2018
 * Revisão: 1v0
 
-*********************************/
+****************************/
 //INICIALIZA JOGADOR
 void InitPlayer(Player &player)
 {
