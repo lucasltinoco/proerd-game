@@ -91,6 +91,18 @@ int main(void)
     al_init_font_addon();
     al_init_ttf_addon();
     al_init_image_addon();
+    //al_install_audio();
+    //al_init_acodec_addon();
+
+    //al_reserve_samples(2);
+
+    //ALLEGRO_SAMPLE *musica_proerd;
+    //musica_proerd = al_load_sample("proerd_song.ogg");
+    //ALLEGRO_SAMPLE_INSTANCE *instance_proerd;
+    //instance_proerd = al_create_sample_instance(musica_proerd);
+
+    //al_set_sample_instance_playmode(instance_proerd, ALLEGRO_PLAYMODE_LOOP);
+    //al_attach_sample_instance_to_mixer(instance_proerd, al_get_default_mixer());
 
     event_queue = al_create_event_queue();
     timer = al_create_timer(1.0 / FPS);
@@ -124,7 +136,10 @@ int main(void)
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_display_event_source(display));
 
+    //al_play_sample_instance(instance_proerd);
+
     al_start_timer(timer);
+
     while(!done)
     {
         ALLEGRO_EVENT ev;
@@ -447,6 +462,8 @@ int main(void)
     al_destroy_font(font18);
     al_destroy_font(font50);
     al_destroy_font(font60);
+    //al_destroy_sample(musica_proerd);
+    //al_destroy_sample_instance(instance_proerd);
     al_destroy_display(display);
 
     return 0;
