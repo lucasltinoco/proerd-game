@@ -30,7 +30,6 @@ struct Player
     bool isJumping;
     bool isRising;
     bool firstSpace;
-    bool drugEffect;
 };
 
 //DROGAS

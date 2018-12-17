@@ -27,7 +27,6 @@ void InitPlayer(Player &player)
     player.gravity = 0.4;
     player.isRising = false;
     player.firstSpace = false;
-    player.drugEffect = 0;
 }
 //DESENHA JOGADOR
 void DrawPlayer(Player &player)
