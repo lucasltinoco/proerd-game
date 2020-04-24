@@ -77,13 +77,17 @@ int main(void)
     ALLEGRO_SAMPLE *musica_proerd;
 
     //Funções de inicialização
-    if(!al_init()) //inicializa Allegro
+    if(!al_init()) { //inicializa Allegro
+        fprintf(stderr, "failed to initialize allegro!\n");
         return -1;
+    }
 
     display = al_create_display(WIDTH, HEIGHT); //cria Display
 
-    if(!display) //testa display
+    if(!display) { //testa display
+        fprintf(stderr, "failed to create display!\n");
         return -1;
+    }
 
     //Carrega addons necessários
     al_init_primitives_addon();
